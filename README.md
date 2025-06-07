@@ -1,141 +1,146 @@
 
+# Cash Flow Minimizer System
 
-```markdown
-# 💸 Cash Flow Minimizer System
+## Overview
 
-A C++ console-based application to minimize the number of transactions among multiple banks by intelligently matching their net dues, considering their supported payment modes.
+The Cash Flow Minimizer System is a C++ application designed to optimize financial transactions between multiple banks by minimizing the number of money transfers required to settle all dues. The program considers each bank's supported payment modes and introduces a central "World Bank" to facilitate transactions between incompatible banks.
 
----
-
-## 🧠 About the Project
-
-In financial systems where **multiple banks** interact, each bank may owe or be owed money by others. This program reduces the **total number of money transfers** required to settle all transactions — a process called **cash flow minimization**.
-
-However, there's a **twist**:  
-Each bank only supports certain **payment modes** (like Google Pay, AliPay, Paytm). A transaction can only occur if both banks support a **common payment mode**. To handle cases where no common mode exists, a special **World Bank** acts as an intermediary, supporting all modes.
+This project demonstrates the use of greedy algorithms, graph theory, and mode-based constraints in a real-world financial simulation.
 
 ---
 
-## 💼 Problem Statement
+## Problem Statement
 
-Given:
+In global financial systems, different banks often operate using various payment modes (e.g., Google Pay, AliPay, Paytm). This system handles:
 
-- A set of **banks**, each supporting certain **payment modes**
-- A list of **transactions** between banks (debtor → creditor → amount)
+- A set of banks, each supporting specific payment modes.
+- A list of financial obligations (debts) between these banks.
+- The presence of a central "World Bank" that supports all modes and acts as an intermediary when two banks do not share a common mode.
 
-You must:
-
-- Compute the **minimum number of transactions** required to settle all dues
-- Ensure payments only happen via **shared modes**
-- Use the **World Bank** only when necessary
+The objective is to compute a series of transactions that settle all debts using the minimum number of transfers, while adhering to payment mode compatibility constraints.
 
 ---
 
+## Example Setup
 
-### 🏦 Banks Involved
+### List of Banks
 
-- `Bank_of_America` (World Bank)
-- `Wells_Fargo`
-- `Royal_Bank_of_Canada`
-- `Westpac`
-- `National_Australia_Bank`
-- `Goldman_Sachs`
+- Bank_of_America (World Bank)
+- Wells_Fargo
+- Royal_Bank_of_Canada
+- Westpac
+- National_Australia_Bank
+- Goldman_Sachs
 
-### 💰 Transactions
+### Transactions
 
-| Debtor                | Creditor               | Amount |
-|-----------------------|------------------------|--------|
-| Goldman_Sachs         | Bank_of_America        | Rs 100 |
-| Goldman_Sachs         | Wells_Fargo            | Rs 300 |
-| Goldman_Sachs         | Royal_Bank_of_Canada   | Rs 100 |
-| Goldman_Sachs         | Westpac                | Rs 100 |
-| National_Australia_Bank | Bank_of_America      | Rs 300 |
-| National_Australia_Bank | Royal_Bank_of_Canada | Rs 100 |
-| Bank_of_America       | Wells_Fargo            | Rs 400 |
-| Wells_Fargo           | Royal_Bank_of_Canada   | Rs 200 |
-| Royal_Bank_of_Canada  | Westpac                | Rs 500 |
+| Debtor                  | Creditor                | Amount (Rs) |
+|-------------------------|-------------------------|-------------|
+| Goldman_Sachs           | Bank_of_America         | 100         |
+| Goldman_Sachs           | Wells_Fargo             | 300         |
+| Goldman_Sachs           | Royal_Bank_of_Canada    | 100         |
+| Goldman_Sachs           | Westpac                 | 100         |
+| National_Australia_Bank | Bank_of_America         | 300         |
+| National_Australia_Bank | Royal_Bank_of_Canada    | 100         |
+| Bank_of_America         | Wells_Fargo             | 400         |
+| Wells_Fargo             | Royal_Bank_of_Canada    | 200         |
+| Royal_Bank_of_Canada    | Westpac                 | 500         |
 
-### 📲 Supported Payment Modes
+### Supported Payment Modes
 
-| Bank                   | Modes                    |
-|------------------------|--------------------------|
-| Bank_of_America        | Google_Pay, AliPay, Paytm|
-| Wells_Fargo            | Google_Pay, AliPay       |
-| Royal_Bank_of_Canada   | AliPay                   |
-| Westpac                | Google_Pay, Paytm        |
-| Goldman_Sachs          | Paytm                    |
-| National_Australia_Bank| AliPay, Paytm            |
+| Bank                    | Supported Modes         |
+|-------------------------|--------------------------|
+| Bank_of_America         | Google_Pay, AliPay, Paytm|
+| Wells_Fargo             | Google_Pay, AliPay       |
+| Royal_Bank_of_Canada    | AliPay                   |
+| Westpac                 | Google_Pay, Paytm        |
+| Goldman_Sachs           | Paytm                    |
+| National_Australia_Bank | AliPay, Paytm            |
 
 ---
 
-## 📈 Algorithm Summary
+## Algorithm Description
 
-1. Compute the **net amount** for each bank:  
+1. **Calculate Net Amounts**  
+   For each bank, compute:  
 ```
 
-Net = Total Incoming - Total Outgoing
+Net Amount = (Sum of credits received) - (Sum of debits paid)
 
 ````
 
-2. Find:
-- The bank with the **highest debit** (most negative net)
-- The bank with the **highest credit** (most positive net)  
-→ Also ensure both share a **common payment mode**
+2. **Find Extremes**  
+- Identify the bank with the maximum debt (most negative net amount).
+- Identify the bank with the maximum credit (most positive net amount).
+- Check for shared payment modes. If none, use the World Bank as an intermediary.
 
-3. Transact the **minimum of both amounts**
+3. **Transfer Settlement**  
+Transfer the minimum of the debtor's and creditor's amounts between the two banks.
 
-4. **Update net amounts** and repeat until all values become 0.
+4. **Update Balances**  
+Adjust the net amounts. If a bank is fully settled (net amount becomes zero), remove it from consideration.
 
-5. If no shared mode exists, use the **World Bank** as an intermediary.
+5. **Repeat**  
+Continue until all bank balances are settled (net amount becomes zero).
 
 ---
 
-## ▶️ How to Run
 
-### 🛠 Prerequisites
+### Requirements
 
-- C++ Compiler (e.g. `g++`)
-- VS Code / Terminal
+- C++ compiler (e.g., `g++`)
+- Command line or terminal access
+- Optionally, Visual Studio Code or any IDE
 
-### 🧾 Steps
+### Compilation
 
-1. **Clone or copy the code into a file** named `cashflow.cpp`
-2. Open terminal and navigate to the folder
-3. Compile:
+For Windows (using CMD or PowerShell):
+
 ```bash
 g++ -std=c++11 -o cashflow cashflow.cpp
 ````
 
-4. Run:
+For Linux/macOS:
 
-   ```bash
-   ./cashflow         # On Linux/macOS
-   cashflow.exe       # On Windows CMD
-   ```
+```bash
+g++ -std=c++11 -o cashflow cashflow.cpp
+```
 
-5. Enter inputs as prompted, or use sample inputs mentioned above.
+### Execution
+
+For Windows:
+
+```bash
+cashflow.exe
+```
+
+For Linux/macOS:
+
+```bash
+./cashflow
+```
 
 ---
 
-## 📸 Sample Execution
+## Features
 
-> Below is a simplified illustration of the output:
+* Menu-driven command-line interface
+* Bank-wise and mode-wise transaction compatibility check
+* Net balance calculation for optimal pairing
+* Efficient resolution of financial transactions with minimum steps
+* Realistic simulation of intermediary banking through a world bank
+
+---
+
+## Sample Output
+
+The system outputs a series of transactions such as:
 
 ```
-The transactions for minimum cash flow are as follows:
-
 Goldman_Sachs pays Rs 300 to Wells_Fargo via Paytm
 Goldman_Sachs pays Rs 100 to Royal_Bank_of_Canada via Paytm
 National_Australia_Bank pays Rs 200 to Bank_of_America via Paytm
 ...
 ```
-
----
-
-## 🙌 Contributions
-
-Pull requests and feedback are welcome! Feel free to fork the repository and improve upon it.
-
----
 
 
