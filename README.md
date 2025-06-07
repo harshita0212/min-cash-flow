@@ -31,7 +31,6 @@ You must:
 
 ---
 
-## 📊 Sample Scenario
 
 ### 🏦 Banks Involved
 
